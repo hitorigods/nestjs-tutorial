@@ -1,5 +1,5 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { APP_FILTER, APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_PIPE } from '@nestjs/core';
 import * as cors from 'cors';
 import helmet from 'helmet';
 import { AppController } from './app.controller';
@@ -12,7 +12,8 @@ import { CatsController } from './cats/cats.controller';
 import { CatsService } from './cats/cats.service';
 import { CatsModule } from './cats/cats.module';
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
-import { ValidationPipe } from './common/schemas/validation.pipe';
+import { ValidationPipe } from './common/pipes/validation.pipe';
+import { RolesGuard } from './guards/roles.guard';
 
 @Module({
   imports: [CatsModule],
@@ -25,6 +26,10 @@ import { ValidationPipe } from './common/schemas/validation.pipe';
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
     AppService,
     CatsService,

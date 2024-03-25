@@ -13,8 +13,9 @@ import { CreateCatDto, createCatSchema } from './dto/create-cat.dto';
 import { CatsService } from './cats.service';
 import { Cat } from './interfaces/cat.interface';
 import { HttpExceptionFilter } from 'src/common/exceptions/http-exception.filter';
-import { ZodValidationPipe } from 'src/common/schemas/zod-validation-pipe';
-import { ValidationPipe } from 'src/common/schemas/validation.pipe';
+import { ZodValidationPipe } from 'src/common/pipes/zod-validation-pipe';
+import { ValidationPipe } from 'src/common/pipes/validation.pipe';
+import { Roles } from 'src/guards/roles.decorator';
 
 @Controller('cats')
 @UseFilters(new HttpExceptionFilter())
@@ -23,6 +24,7 @@ export class CatsController {
 
   @Post()
   @UsePipes(new ZodValidationPipe(createCatSchema))
+  @Roles(['admin'])
   async create(@Body(new ValidationPipe()) createCatDto: CreateCatDto) {
     try {
       this.catsService.create(createCatDto);
